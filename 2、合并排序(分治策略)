@@ -1,0 +1,81 @@
+// 合并排序法，分治策略
+//
+
+#include <vector>
+#include <iostream>
+using namespace std;
+
+void merge(vector<int> &a, vector<int>::iterator p, vector<int>::iterator q, vector<int>::iterator r)
+{//合并的过程
+	vector<int> L(p, q+1);//复制两个数组
+	vector<int> R(q + 1, r+1);
+	auto i = L.begin();
+	auto j = R.begin();
+	while (1)
+	{
+		if (i == L.end())//当有一个到重点时，后面的直接复制，结束循环
+		{
+			while (p != r + 1)
+			{
+				*p = *j;
+				p++;
+				j++;
+			}
+			break;
+			
+		}
+		else if (j == R.end())
+		{
+			while (p != r + 1)
+			{
+				*p = *i;
+				p++;
+				i++;
+			}
+			break;
+		}
+		else if (*i < *j)
+		{
+			*p = *i;
+			p++;
+			i++;
+		}
+		else
+		{
+			*p = *j;
+			p++;
+			j++;
+		}
+	}
+
+}
+
+void merge_sort(vector<int> &a, vector<int>::iterator p, vector<int>::iterator r)
+{
+	if (p < r)
+	{
+		int t1 = p - a.begin();
+		int t2 = r - a.begin();
+		int t3 = (t1+t2) / 2;
+		auto q = a.begin() + t3;
+
+		merge_sort(a, p, q);
+		merge_sort(a, q + 1, r);
+		merge(a, p, q, r);
+
+	}
+}
+
+
+int main()
+{
+	vector<int> v = { 5,2,6,3,7,4,1};
+
+	merge_sort(v, v.begin(), v.end()-1);
+	for (auto i : v)
+	{
+		cout << i << " ";
+	}
+    return 0;
+}
+
