@@ -1,0 +1,18 @@
+//插入排序法
+vector<int> insertion_sort(vector<int> a)
+{
+	for (auto i = a.begin() + 1; i < a.end(); i++)//外层循环，待插入的数
+	{
+		int key = *i;
+		auto j = i - 1;
+		while (*j > key)//内层循环，找到后面比key小的
+		{
+			*(j + 1) = *j;
+			if (j == a.begin())break;
+			j--;
+		}
+		if (j == a.begin())*j = key;//插入
+		else *(j + 1) = key;
+	}
+	return a;
+}
