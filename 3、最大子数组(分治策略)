@@ -1,0 +1,101 @@
+// 最大子数组问题，分治策略
+//
+
+#include <vector>
+#include <iostream>
+using namespace std;
+
+struct subarray  //子数组结构体，两个迭代器，子数组的和
+{
+	vector<int>::iterator low;
+	vector<int>::iterator high;
+	int sum;
+	subarray(vector<int> v)
+	{
+		low = v.begin();
+		high = v.end();
+		sum = 0;
+	}
+};
+//跨越mid的最大子数组
+subarray find_max_crossing_subarray(vector<int> &v, vector<int>::iterator low, vector<int>::iterator mid, vector<int>::iterator high)
+{
+	subarray tem(v);//tem的初始化
+	tem.low = mid - 1;
+	tem.high = mid;
+
+	int sum = 0;
+	int left_sum = *(mid-1);//跨越中点的子数组，必须包含左边最少一个数
+	auto i = mid-1;
+	while (1)
+	{
+		sum += *i;
+		if (sum > left_sum)
+		{
+			left_sum = sum;
+			tem.low = i;
+		}
+		if (i == low)break;
+		else i--;
+	}
+	sum = 0;
+	int right_sum = *mid;
+	i = mid;
+	while (i<high)
+	{
+		sum += *i;
+		if (sum > right_sum)
+		{
+			right_sum = sum;
+			tem.high = i;
+		}
+		i++;
+	}
+	tem.sum = left_sum + right_sum;
+	return tem;
+}
+
+subarray find_max_subarray(vector<int> &v, vector<int>::iterator low, vector<int>::iterator high)
+{
+	subarray tem(v);
+	if (high == low+1)//基本情况
+	{
+		tem.high = high;
+		tem.low = low;
+		tem.sum = *low;
+		return tem;
+	}
+	else
+	{
+		//求mid
+		int t1 = low - v.begin(), t2 = high - v.begin();
+		int t3 = (t1 + t2) / 2;
+		auto mid = v.begin() + t3;
+
+		subarray tem_left = find_max_subarray(v, low, mid);
+		subarray tem_right = find_max_subarray(v, mid, high);
+		subarray tem_crossing = find_max_crossing_subarray(v, low, mid, high);
+
+		if ((tem_left.sum > tem_right.sum) && (tem_left.sum > tem_crossing.sum))
+		{
+			return tem_left;
+		}
+		else if ((tem_right.sum > tem_left.sum) && (tem_right.sum > tem_crossing.sum))
+		{
+			return tem_right;
+		}
+		else return tem_crossing;
+
+	}
+
+}
+
+
+int main()
+{
+	vector<int> v = { 1,2,3,-3,-2 };
+	subarray s = find_max_subarray(v, v.begin(), v.end());
+	cout << s.sum;
+    return 0;
+}
+
