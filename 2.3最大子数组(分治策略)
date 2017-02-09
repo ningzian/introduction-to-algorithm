@@ -47,9 +47,8 @@ subarray find_max_crossing_subarray(vector<int> &v, vector<int>::iterator low, v
 		if (sum > right_sum)
 		{
 			right_sum = sum;
-			tem.high = i;
+			tem.high = ++i;
 		}
-		i++;
 	}
 	tem.sum = left_sum + right_sum;
 	return tem;
@@ -69,7 +68,7 @@ subarray find_max_subarray(vector<int> &v, vector<int>::iterator low, vector<int
 	{
 		//求mid
 		int t1 = low - v.begin(), t2 = high - v.begin();
-		int t3 = (t1 + t2) / 2;
+		int t3 = (t1 + t2) / 2 + 1;
 		auto mid = v.begin() + t3;
 
 		subarray tem_left = find_max_subarray(v, low, mid);
